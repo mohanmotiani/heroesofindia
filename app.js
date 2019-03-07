@@ -3,20 +3,20 @@ const cp = require('cookie-parser');
 const bp = require('body-parser');
 require('dotenv').config();
 
-const mongoose = require('mongoose');
+//const mongoose = require('mongoose');
 
 const passport = require('passport');
 const app = express();
 
 const port = process.env.PORT || 3000;
-const dbPort = process.env.dbPort || 27017;
-const dbUrl = process.env.DB_URL || "localhost";
-const dbCollection = process.env.DB_COLLECTION || "auth-test";
+// const dbPort = process.env.dbPort || 27017;
+// const dbUrl = process.env.DB_URL || "localhost";
+// const dbCollection = process.env.DB_COLLECTION || "auth-test";
 
-mongoose.set('useCreateIndex', true);
-mongoose.connect(`mongodb://${dbUrl}/${dbCollection}`, {useNewUrlParser: true})
-    .then(_ => console.log('Connected Successfully to MongoDB'))
-    .catch(err => console.log(err));
+// mongoose.set('useCreateIndex', true);
+// mongoose.connect(`mongodb://${dbUrl}/${dbCollection}`, {useNewUrlParser: true})
+//     .then(_ => console.log('Connected Successfully to MongoDB'))
+//     .catch(err => console.log(err));
 
 app.use(passport.initialize());
 

@@ -5,6 +5,13 @@ const router = require('express').Router();
 //import BcryptJS tool and user model
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+//get the table created for user
+
+User.sync()
+    .then(()=>{
+        console.log('User table created')
+    })
+    .catch(err => console.log(err));
 
 //get access to environment variables and get the secret key
 require('dotenv').config();
@@ -32,57 +39,57 @@ router.get('',
     (req, res) => {
         res.status(200).json({"success": true})
     });
-
+    
 //register user
 router.post('/register', (req, res)=>{
-    User.findOne({emailAddress: req.body.emailAddress})
+    const today = new Date();
+    const userData = {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        password: req.body.password,
+        create: today
+    };
+    
+    User.findOne({
+            where: {
+                email: req.body.email
+            }
+        })
         .then(user=>{
             //if user is found - return error message
-            if(user){
-                let error = 'User already registered with this email address';
-                return res.status(400).json(error);
+            if(!user){
+                const hash = bcrypt.hashSync(userData.password, 10);
+                userData.password = hash;
+                User.create(userData)
+                .then(user => {
+                    let token = jwt.sign(user.dataValues, secret, {
+                        expiresIn: 1440
+                    })
+                    res.status(200).json({token: token});
+                })
+                .catch(err => {
+                    res.status(400).json({'error': err});
+                })
             } else {
-                //hash the password, save user and send token back
-                const newUser = new User ({
-                    userName: req.body.name,
-                    emailAddress: req.body.emailAddress,
-                    password: req.body.password
-                });
-                bcrypt.genSalt(10, (err, salt)=>{
-                    if(err) throw err;
-                    bcrypt.hash(newUser.password, salt, (err, hash)=>{
-                        if(err) throw err;
-                        newUser.password = hash;
-                        newUser.save().then(user => {
-                            //generate token
-                            const payload = {
-                                id: user._id,
-                                name: user.name
-                            };
-                            jwt.sign(payload, secret, {expiresIn: 36000},(err, token)=>{
-                                if(err) res.status(500).json({
-                                    error: 'Error signing token',
-                                    raw: err
-                                });
-                                res.json({
-                                    success: true,
-                                    token: `Bearer ${token}`
-                                });
-                            });   
-                          //  res.status(200).json({"success": true}); 
-                        })
-                            .catch(err => res.status(400).json(err));
-                    });
-                });
+                let error = 'User already registered with this email address';
+                res.status(400).json({'error': err});
             }
-        });
+        })
+        .catch(err =>{
+            res.status(400).json({'error': err})
+        })
 });
 
 router.post('/login', (req, res)=>{
-    const email = req.body.emailAddress;
+    const email = req.body.email;
     const password = req.body.password;
     let errors = {};
-    User.findOne({emailAddress: email})
+    User.findOne({
+        where: {
+            email: email
+        }
+        })
         .then(user => {
             if(!user){
                 errors.email = "No Account found";
