@@ -10,19 +10,39 @@ const bcrypt = require('bcryptjs');
 require('dotenv').config();
 const secret = process.env.SECRET || 'mydefaultsecret';
 
+
+//configure CORS
+
+//Setup CORS 
+router.use((req,res, next)=>{
+    //Enabling CORS
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT");
+    res.header("Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, contentType, Content-Type, Accept, Authorization");
+    next();
+});
+
 //Import passport and JwtWebToken library
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-//register user
+//router testing
+router.get('', 
+    (req, res) => {
+        res.status(200).json({"success": true})
+    });
 
+//register user
 router.post('/register', (req, res)=>{
     User.findOne({emailAddress: req.body.emailAddress})
         .then(user=>{
+            //if user is found - return error message
             if(user){
                 let error = 'User already registered with this email address';
                 return res.status(400).json(error);
             } else {
+                //hash the password, save user and send token back
                 const newUser = new User ({
                     userName: req.body.name,
                     emailAddress: req.body.emailAddress,
@@ -33,8 +53,25 @@ router.post('/register', (req, res)=>{
                     bcrypt.hash(newUser.password, salt, (err, hash)=>{
                         if(err) throw err;
                         newUser.password = hash;
-                        newUser.save().then(user => res.json({"success": true}))
-                            .catch(err => res.json(400).json(err));
+                        newUser.save().then(user => {
+                            //generate token
+                            const payload = {
+                                id: user._id,
+                                name: user.name
+                            };
+                            jwt.sign(payload, secret, {expiresIn: 36000},(err, token)=>{
+                                if(err) res.status(500).json({
+                                    error: 'Error signing token',
+                                    raw: err
+                                });
+                                res.json({
+                                    success: true,
+                                    token: `Bearer ${token}`
+                                });
+                            });   
+                          //  res.status(200).json({"success": true}); 
+                        })
+                            .catch(err => res.status(400).json(err));
                     });
                 });
             }

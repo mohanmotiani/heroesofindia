@@ -26,18 +26,20 @@ app.use(cp());
 app.use(bp.urlencoded({extended: false}));
 app.use(bp.json());
 
+//middleware to log traffic
 app.use((req, res, next)=>{
-    if(req.body) console.log(req.params);
+    console.log(req.body);
+    if(req.body) console.log(req.body);
     if (req.params) console.log(req.params);
     if(req.query) console.log(req.query);
-    console.log(`Received a ${req.method} request from ${req.ip} for $ {req.url}`);
+    console.log(`Received a ${req.method} request from ${req.ip} for ${req.url}`);
     next();
 });
 
-/* GET users listing. */
-app.get('/', function (req, res) {
-    res.send('<h1>Hello there!</h1>');
-});
+// /* GET users listing. */
+// app.get('/', function (req, res) {
+//     res.send('<h1>Hello there!</h1>');
+// });
 
 //serve apis 
 app.use('/users', require('./routes/users'));
