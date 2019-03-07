@@ -36,13 +36,25 @@ app.use((req, res, next)=>{
     next();
 });
 
-// /* GET users listing. */
-// app.get('/', function (req, res) {
-//     res.send('<h1>Hello there!</h1>');
-// });
+//enable CORS
+
+app.use((req,res, next)=>{
+    //Enabling CORS
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS, POST, PUT");
+    res.header("Access-Control-Allow-Headers",
+            "Origin, X-Requested-With, contentType, Content-Type, Accept, Authorization");
+    next();
+});
+
+/* GET users listing. */
+app.get('/', function (req, res) {
+    res.send('<h1>Hello there!</h1>');
+});
 
 //serve apis 
-app.use('/users', require('./routes/users'));
+app.use('/api/users', require('./routes/users'));
+app.use('/api/events', require('./routes/events'))
 
 app.listen(port, err => {
     if(err) console.error(err);

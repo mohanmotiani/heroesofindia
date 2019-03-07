@@ -2,25 +2,25 @@ const Sequelize = require('sequelize');
 const db = require('../database/db');
     
 module.exports = db.sequelize.define(
-    'user', 
+    'event', 
     {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        first_name: {
+        name: {
             type: Sequelize.STRING
         },
-        last_name: {
-            type: Sequelize.STRING
+        date: {
+            type: Sequelize.DATEONLY
         },
-        email: {
-            type: Sequelize.STRING
+        price: {
+            type: Sequelize.DECIMAL
         },
-        password: {
-            type: Sequelize.STRING
-        },
+        special: {
+            type: Sequelize.BOOLEAN
+        },      
         created: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW

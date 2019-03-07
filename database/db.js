@@ -12,7 +12,8 @@ const sequelize = new Sequelize('ModelEntSol','sa', 'Pwd#0001',{
         min: 0,
         acquire: 30000,
         idle: 1000
-    }
+    },
+    logging: false
 })
 
 sequelize
@@ -23,7 +24,7 @@ sequelize
   .catch(err => {
     console.error('Unable to connect to the database:', err);
   });
-  
+
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
