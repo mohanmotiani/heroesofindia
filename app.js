@@ -55,9 +55,10 @@ app.use((req,res, next)=>{
 
 
 /* GET users listing. */
-app.get('/', function (req, res) {
-    res.send('<h1>Hello there!</h1>');
-});
+// app.get('/', function (req, res) {
+//     res.sendFile('index.html');
+//     // res.send('<h1>Hello there!</h1>');
+// });
 
 
 //serve apis 
