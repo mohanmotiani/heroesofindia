@@ -2,29 +2,20 @@ const Sequelize = require('sequelize');
 const db = require('../database/db');
     
 module.exports = db.sequelize.define(
-    'event', 
+    'lead', 
     {
         id: {
             type: Sequelize.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
-        name: {
+        title: {
             type: Sequelize.STRING
         },
         description: {
             type: Sequelize.STRING
         },
-        date: {
-            type: Sequelize.DATEONLY
-        },
-        price: {
-            type: Sequelize.DECIMAL
-        },
-        special: {
-            type: Sequelize.BOOLEAN
-        },      
-        created: {
+        createDate: {
             type: Sequelize.DATE,
             defaultValue: Sequelize.NOW
         }

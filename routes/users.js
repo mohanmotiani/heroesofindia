@@ -1,7 +1,7 @@
 ﻿//routes/users.js
 //Initialize an instance of Router class
 const router = require('express').Router();
-
+var cors = require('cors');
 //import BcryptJS tool and user model
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
@@ -34,7 +34,10 @@ const secret = process.env.SECRET || 'mydefaultsecret';
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
+
+
 //router testing
+router.use(cors());
 router.get('', 
     (req, res) => {
         res.status(200).json({"success": true})
@@ -44,8 +47,8 @@ router.get('',
 router.post('/register', (req, res)=>{
     const today = new Date();
     const userData = {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
+        first_name: req.body.fname || 'ABCD',
+        last_name: req.body.lname || 'XYZ',
         email: req.body.email,
         password: req.body.password,
         create: today
@@ -66,7 +69,10 @@ router.post('/register', (req, res)=>{
                     let token = jwt.sign(user.dataValues, secret, {
                         expiresIn: 1440
                     })
-                    res.status(200).json({token: token});
+                    res.status(200).json({
+                        success: true,
+                        token: `Bearer ${token}`
+                    });
                 })
                 .catch(err => {
                     res.status(400).json({'error': err});

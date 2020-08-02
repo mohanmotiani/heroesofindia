@@ -1,11 +1,11 @@
 const Sequelize = require('sequelize');
 const db = {};
 const sequelize = new Sequelize('ModelEntSol','sa', 'Pwd#0001',{
-    host: 'MM_SPECTRE',
+    host: 'MMGRAM',
     dialect: 'mssql',
     dialectOptions: {
         "encrypt" : true,
-        "instanceName": "MSSQLSERVER01"            
+        "instanceName": "MMGRAM"            
     },
     pool: {
         max: 5,
