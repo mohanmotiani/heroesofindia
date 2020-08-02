@@ -45,6 +45,11 @@ router.get('',
     
 //register user
 router.post('/register', (req, res)=>{
+    res.status(200).json({
+        success: true,
+        token: 'token'
+    });
+    return;
     const today = new Date();
     const userData = {
         first_name: req.body.fname || 'ABCD',
